@@ -82,7 +82,16 @@ public class SubscribeActivity extends AppCompatActivity {
         @Override
         public SubscribeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subscribe, parent, false);
-            return new SubscribeViewHolder(view);
+
+            final SubscribeViewHolder holder = new SubscribeViewHolder(view);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    int position = holder.getAdapterPosition();
+                    MainActivity.start(SubscribeActivity.this,mDataList.get(position));
+                }
+            });
+
+            return holder;
         }
 
         @Override

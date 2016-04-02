@@ -18,7 +18,7 @@ public interface ApiService {
 
 
     @FormUrlEncoded
-    @POST("magazine/api/periodical/listSubscribe") Observable<Result> listSubscribe(@Field(
+    @POST("magazine/api/periodical/listSubscribe") Observable<ZipResultModel> listSubscribe(@Field(
             "magazineIds") String magazineIds, @Field("size") String size);
 
 //    http://appstatic.lenovomm.com/static/magazine/20160330/8746cf0bbe24411598125f37f49fbac1
