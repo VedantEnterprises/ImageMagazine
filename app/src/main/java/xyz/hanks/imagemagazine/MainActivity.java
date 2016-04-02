@@ -1,16 +1,44 @@
 package xyz.hanks.imagemagazine;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import butterknife.Bind;
+
 public class MainActivity extends AppCompatActivity {
+
+    @Bind(R.id.viewpager) ViewPager mViewPager;
+
+    private MagazineAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         hideSystemUI();
+        mAdapter = new MagazineAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mAdapter);
+    }
+
+
+    static class MagazineAdapter extends FragmentPagerAdapter{
+
+        public MagazineAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override public Fragment getItem(int position) {
+            return null;
+        }
+
+        @Override public int getCount() {
+            return 0;
+        }
     }
 
     // This snippet hides the system bars.
