@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,11 +21,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         hideSystemUI();
         mAdapter = new MagazineAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
+
+        SubscribeActivity.start(this);
     }
 
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
 
     static class MagazineAdapter extends FragmentPagerAdapter{
 

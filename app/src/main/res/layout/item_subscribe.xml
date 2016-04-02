@@ -16,6 +16,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_name"
             android:maxLines="1"
             android:ellipsize="end"
             android:layout_width="match_parent"
@@ -26,6 +27,7 @@
             tools:text="励志"/>
 
         <TextView
+            android:id="@+id/tv_supplyDesc"
             android:maxLines="1"
             android:ellipsize="end"
             android:layout_width="match_parent"
@@ -36,6 +38,7 @@
             tools:text="2016.3.23日起 每日供刊 每期1页"/>
 
         <TextView
+            android:id="@+id/tv_description"
             android:maxLines="1"
             android:ellipsize="end"
             android:layout_width="match_parent"

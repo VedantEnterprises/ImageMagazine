@@ -1,6 +1,7 @@
 package xyz.hanks.imagemagazine;
 
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 
@@ -16,6 +17,7 @@ public class RestfulClient {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://magazine.lenovomm.com/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         service = retrofit.create(ApiService.class);
     }

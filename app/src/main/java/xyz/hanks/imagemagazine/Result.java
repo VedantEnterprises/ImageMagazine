@@ -1,10 +1,12 @@
 package xyz.hanks.imagemagazine;
 
+import java.util.List;
+
 /**
  * Created by hanks on 16/4/2.
  */
 public class Result {
     public int ret;
     public String msg;
-    public String data;
+    public List<SubscribeModel> data;
 }
