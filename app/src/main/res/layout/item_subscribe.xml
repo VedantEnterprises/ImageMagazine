@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="110dp">
+
+
+    <LinearLayout
+        android:paddingLeft="20dp"
+        android:gravity="center_vertical"
+        android:layout_toLeftOf="@+id/action_subscribe"
+        android:id="@+id/layout_left"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:textColor="#363636"
+            android:textSize="16sp"
+            tools:text="励志"/>
+
+        <TextView
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:textColor="#363636"
+            android:textSize="12sp"
+            tools:text="2016.3.23日起 每日供刊 每期1页"/>
+
+        <TextView
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:textColor="#aaaaaa"
+            android:textSize="12sp"
+            tools:text="用别人的故事励志自己"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/action_subscribe"
+        android:layout_centerVertical="true"
+        android:layout_width="100dp"
+        android:layout_height="44dp"
+        android:layout_alignParentRight="true"
+        android:text="订阅"/>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="#e1e1e1"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+</RelativeLayout>
