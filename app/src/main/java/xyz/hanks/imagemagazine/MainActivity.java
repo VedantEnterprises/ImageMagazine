@@ -2,16 +2,20 @@ package xyz.hanks.imagemagazine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,10 +28,16 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
 
     public static final String SUBSCRIBEMODEL = "subscribeModel";
+    private static final int IMAGE_SIZE = 3;
 
     SubscribeModel model;
 
     @Bind(R.id.viewpager) ViewPager mViewPager;
+    @Bind(R.id.loading) View mLoading;
+
+
+    List<String> mImagePathList = new ArrayList<>();
+    List<ImageView> mImageList = new ArrayList<>();
 
     private MagazineAdapter mAdapter;
 
@@ -43,21 +53,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         hideSystemUI();
-        mAdapter = new MagazineAdapter(getSupportFragmentManager());
+        mAdapter = new MagazineAdapter();
         mViewPager.setAdapter(mAdapter);
+
+        for (int i = 0; i < IMAGE_SIZE; i++) {
+            ImageView imageView = new ImageView(this);
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            mImageList.add(imageView);
+        }
 
 
         if (getIntent().hasExtra(SUBSCRIBEMODEL)) {
             model = getIntent().getParcelableExtra(SUBSCRIBEMODEL);
             initData();
         } else {
+            mLoading.setVisibility(View.GONE);
             SubscribeActivity.start(this);
+            finish();
         }
     }
 
     private void initData() {
 
-        String magazineIds = "3,5,6,7,8,9,11,13,15,17,19,21,22,23,24,27,28,29,30,31,33,34,35,36,38";
+        String magazineIds = "2";
         String size = "200";
         RestfulClient.getInstance().listSubscribe(magazineIds, size)
                 .subscribeOn(Schedulers.newThread())
@@ -66,19 +84,40 @@ public class MainActivity extends AppCompatActivity {
                         return Observable.from(zipResultModel.data);
                     }
                 })
-                .doOnNext(new Action1<ZipModel>() {
-                    @Override public void call(ZipModel zipModel) {
+                .map(new Func1<ZipModel, String>() {
+                    @Override public String call(ZipModel zipModel) {
                         try {
-                            RestfulClient.getInstance().downLoadZip(zipModel);
+                            return RestfulClient.getInstance().downLoadZip(zipModel);
                         } catch (IOException e) {
                             e.printStackTrace();
+                            return null;
                         }
                     }
                 })
+                .filter(new Func1<String, Boolean>() {
+                    @Override public Boolean call(String s) {
+                        return s != null && !"".equals(s);
+                    }
+                })
+                .map(new Func1<String, Integer>() {
+                    @Override public Integer call(String dirPath) {
+                        File file = new File(dirPath);
+                        if (file.exists()) {
+                            for (File file1 : file.listFiles()) {
+                                if (file1.getName().endsWith(".jpg")) {
+                                    mImagePathList.add(file1.getAbsolutePath());
+                                }
+                            }
+                        }
+                        return 0;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ZipModel>() {
-                    @Override public void call(ZipModel zipModel) {
-                        Log.e("hhhhh","success........................");
+                .subscribe(new Action1<Integer>() {
+                    @Override public void call(Integer dirPath) {
+                        mLoading.setVisibility(View.GONE);
+                        mAdapter.notifyDataSetChanged();
+                        Log.e("hhhhh", "success........................");
                     }
                 });
     }
@@ -113,18 +152,31 @@ public class MainActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
-    static class MagazineAdapter extends FragmentPagerAdapter {
-
-        public MagazineAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override public Fragment getItem(int position) {
-            return null;
-        }
+    class MagazineAdapter extends PagerAdapter {
 
         @Override public int getCount() {
-            return 0;
+            return Integer.MAX_VALUE;
+        }
+
+        @Override public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override public Object instantiateItem(ViewGroup container, int position) {
+            ImageView imageView = null;
+            try {
+                imageView = mImageList.get(position % IMAGE_SIZE);
+                container.addView(imageView);
+                imageView.setImageBitmap(BitmapFactory.decodeFile(mImagePathList.get(position % mImagePathList.size())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return imageView;
+        }
+
+        @Override public void destroyItem(ViewGroup container, int position, Object object) {
+            ImageView imageView = mImageList.get(position % IMAGE_SIZE);
+            container.removeView(imageView);
         }
     }
 }

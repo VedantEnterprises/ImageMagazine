@@ -8,4 +8,11 @@
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/loading"
+        android:layout_gravity="center"
+        android:layout_width="40dp"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_height="40dp"/>
 </FrameLayout>

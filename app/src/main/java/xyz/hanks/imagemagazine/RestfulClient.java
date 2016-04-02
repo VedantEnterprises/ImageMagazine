@@ -2,6 +2,7 @@ package xyz.hanks.imagemagazine;
 
 import android.os.Environment;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,18 +55,26 @@ public class RestfulClient {
     }
 
 
-    public void downLoadZip(ZipModel zipModel) throws IOException {
+    public String downLoadZip(ZipModel zipModel) throws IOException {
+
+        String dir = getSDPath(zipModel.fileUrl);
+
         OkHttpClient okHttpClient = new OkHttpClient();
-        Request request = new Request.Builder().url("http://appstatic.lenovomm.com/static/"+zipModel.fileUrl).build();
+        Request request = new Request.Builder().url("http://appstatic.lenovomm.com/static/" + zipModel.fileUrl).build();
         Response response = okHttpClient.newCall(request).execute();
         InputStream inputStream = response.body().byteStream();
 
         ZipInputStream zin = new ZipInputStream(inputStream);
         ZipEntry entry;
+        String sdPath = null;
         // while there are entries I process them
         while ((entry = zin.getNextEntry()) != null) {
             System.out.println("Unzipping " + entry.getName());
-            FileOutputStream fout = new FileOutputStream(getSDPath() +"/" +entry.getName());
+            String path = dir + "/" + entry.getName();
+            if(new File(path).exists()){
+                continue;
+            }
+            FileOutputStream fout = new FileOutputStream(path);
             for (int c = zin.read(); c != -1; c = zin.read()) {
                 fout.write(c);
             }
@@ -73,9 +82,15 @@ public class RestfulClient {
             fout.close();
         }
         zin.close();
+        return dir;
     }
 
-    private String getSDPath() {
-        return Environment.getExternalStorageDirectory().getAbsolutePath();
+    private String getSDPath(String fileUrl) {
+        String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/magazine/"+fileUrl;
+        File file = new File(absolutePath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file.getAbsolutePath();
     }
 }
